@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from models.booking_model import Booking, db
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+
 booking_bp = Blueprint('booking', __name__)
 
 @booking_bp.route('/book', methods=['POST'])
@@ -28,3 +29,4 @@ def my_bookings():
     bookings = Booking.query.filter_by(user_id=user_id).all()
 
     return jsonify([b.id for b in bookings])
+

@@ -3,10 +3,14 @@ from config import Config
 from models.user_model import db, bcrypt
 from flask_jwt_extended import JWTManager
 from flask import render_template
+from app_extensions import Mail
 
 from routes.auth_routes import auth_bp
 from routes.flight_routes import flight_bp
 from routes.booking_routes import booking_bp
+from routes.ticket_routes import ticket_bp
+
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -21,7 +25,19 @@ jwt = JWTManager(app)
 app.register_blueprint(auth_bp)
 app.register_blueprint(flight_bp)
 app.register_blueprint(booking_bp)
+app.register_blueprint(ticket_bp)
 
+
+mail = Mail()
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'milanpanja731@gmail.com'
+app.config['MAIL_PASSWORD'] = 'auss eyqx acog inpr'  # NOT real password
+app.config['MAIL_DEFAULT_SENDER'] = 'milanpanja731@gmail.com'
+
+mail.init_app(app)
 
 if __name__ == "__main__":
     app.run(debug=True)
