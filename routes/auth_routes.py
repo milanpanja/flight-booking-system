@@ -11,24 +11,32 @@ auth_bp = Blueprint('auth', __name__)
 def register():
     data = request.json
 
-    # 🔍 Check existing user
     if User.query.filter_by(email=data['email']).first():
         return jsonify({"msg": "Email already exists"}), 400
 
-    # ✅ Create user
     user = User(
         first_name=data['first_name'],
-        middle_name=data.get('middle_name'),  # optional
+        middle_name=data.get('middle_name'),
         last_name=data['last_name'],
         email=data['email'],
         phone=data.get('phone'),
-        created_by=data.get('created_by')  # optional (admin use)
+        created_by=None 
     )
 
     user.set_password(data['password'])
 
     db.session.add(user)
     db.session.commit()
+
+    # ✅ SEND EMAIL AFTER REGISTER
+    try:
+        send_email(
+            to=user.email,
+            subject="Welcome to Our Platform 🎉",
+            body=f"Hello {user.first_name},\n\nYour account has been created successfully!"
+        )
+    except Exception as e:
+        print("Email Error:", e)
 
     return jsonify({"msg": "User Registered Successfully"})
 

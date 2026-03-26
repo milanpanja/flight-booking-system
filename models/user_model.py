@@ -20,7 +20,7 @@ class User(db.Model):
 
     # 📧 Contact
     email = db.Column(db.String(100), unique=True, nullable=False)
-    phone = db.Column(db.String(15), unique=True, nullable=True)
+    phone = db.Column(db.String(15), unique=False, nullable=True)
 
     # 🔐 Auth
     password = db.Column(db.String(200), nullable=False)

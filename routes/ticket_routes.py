@@ -80,17 +80,66 @@ def get_my_tickets():
 
     return jsonify(result)
 
-@ticket_bp.route('/cancel-ticket/<int:id>', methods=['DELETE'])
+@ticket_bp.route('/cancel-ticket/<string:id>', methods=['DELETE'])
 @jwt_required()
 def cancel_ticket(id):
     user_id = get_jwt_identity()
 
-    ticket = Ticket.query.filter_by(id=id, user_id=user_id).first()
+    print("URL ID:", id)
+    print("JWT user_id:", user_id)
+
+    # Step 1: Find ticket
+    ticket = Ticket.query.filter_by(id=id).first()
 
     if not ticket:
+        print("❌ Ticket not found in DB")
         return jsonify({"msg": "Ticket not found"}), 404
 
+    print("✅ Ticket found, DB user_id:", ticket.user_id)
+
+    # Step 2: Check ownership
+    if ticket.user_id != user_id:
+        print("❌ Unauthorized access")
+        return jsonify({"msg": "Unauthorized"}), 403
+
+    # ✅ Get user details BEFORE delete
+    user = User.query.get(user_id)
+
+    # ✅ Store ticket info before deleting
+    flight_name = ticket.flight_name
+    from_city = ticket.from_city
+    to_city = ticket.to_city
+    seat_number = ticket.seat_number
+    departure_time = ticket.departure_time
+
+    # Step 3: Delete ticket
     db.session.delete(ticket)
     db.session.commit()
 
-    return jsonify({"msg": "Ticket cancelled"})
+    # Step 4: Send cancellation email
+    try:
+        send_email(
+            to=user.email,
+            subject="Ticket Cancelled ❌",
+            body=f"""
+Hello {user.full_name()},
+
+Your ticket has been cancelled successfully.
+
+Flight: {flight_name}
+From: {from_city}
+To: {to_city}
+Seat: {seat_number}
+Departure: {departure_time}
+
+Status: Cancelled ❌
+
+If this was not you, please contact support immediately.
+
+Thank you!
+"""
+        )
+    except Exception as e:
+        print("Email Error:", e)
+
+    return jsonify({"msg": "Your ticket cancelled!!"})
