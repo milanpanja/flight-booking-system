@@ -33,9 +33,9 @@ mail = Mail()
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'milanpanja731@gmail.com'
-app.config['MAIL_PASSWORD'] = 'auss eyqx acog inpr'  # NOT real password
-app.config['MAIL_DEFAULT_SENDER'] = 'milanpanja731@gmail.com'
+app.config['MAIL_USERNAME'] = 'skybooker58@gmail.com'
+app.config['MAIL_PASSWORD'] = 'hybq okrv oyvr uwwh' 
+app.config['MAIL_DEFAULT_SENDER'] = 'skybooker58@gmail.com'
 
 mail.init_app(app)
 
