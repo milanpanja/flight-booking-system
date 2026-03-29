@@ -9,6 +9,7 @@ from routes.auth_routes import auth_bp
 from routes.flight_routes import flight_bp
 from routes.booking_routes import booking_bp
 from routes.ticket_routes import ticket_bp
+from routes.admin_routes import admin_bp
 
 
 
@@ -26,6 +27,7 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(flight_bp)
 app.register_blueprint(booking_bp)
 app.register_blueprint(ticket_bp)
+app.register_blueprint(admin_bp)
 
 
 mail = Mail()
